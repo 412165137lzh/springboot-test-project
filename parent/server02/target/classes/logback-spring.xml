@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <springProperty scope="context" name="APPLICATION_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="SERVER_PORT" source="server.port" defaultValue="unknown" />
+    <springProperty scope="context" name="SERVER_ID" source="serverId" defaultValue="unknown" />
+    <!--<springProperty scope="context" name="LOG_BASE_PATH" source="log.basePath" defaultValue="d:/logs/test" />-->
+    <springProperty scope="context" name="LOG_BASE_PATH" source="log.basePath" defaultValue="mylogs" />
+
+    <!--定义日志文件的存储地址,使用绝对路径-->
+    <property name="MY_PATTERN" value="%d{yyyy-MM-dd} %d{HH:mm:ss:SSS} [%level] [%class{5}:%line] [thread=%thread] --- %msg%n"/>
+    <!-- 控制台日志信息输出设置 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--格式化输出：
+		%d表示当前的日期，大括号{}里面是固定的语法格式！SSS代表毫秒
+		%thread表示线程名，比如main
+		%-5level：级别从左显示5个字符宽度，就是这一行的日志信息是什么级别的，有ERROR，WARN，INFO，DEBUG ，TRACE
+		%logger{36}：代表全类名，就是什么类抛出的日志信息，就写什么类的类名
+		%msg：代表日志的消息
+		%n是换行符，就是当前行的日志打印完之后，需要换行  -->
+            <pattern>${MY_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 下面就是配置让日志以文件的形式保存到本地磁盘中，文件中的信息和控制台的基本一模一样！ -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <fileNamePattern>${LOG_BASE_PATH}/${APPLICATION_NAME}-%d{yyyy-MM-dd_HH}-ip${SERVER_ID}.%i.log</fileNamePattern>
+            <maxHistory>720</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${MY_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 异步输出（未深入了解，TODO） -->
+ <!--   <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        &lt;!&ndash; 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 &ndash;&gt;
+        <discardingThreshold>0</discardingThreshold>
+        &lt;!&ndash; 更改默认的队列的深度,该值会影响性能.默认值为256 &ndash;&gt;
+        <queueSize>512</queueSize>
+        &lt;!&ndash; 添加附加的appender,最多只能添加一个 &ndash;&gt;
+        <appender-ref ref="FILE"/>
+    </appender>-->
+
+    <!--<logger name="org.apache.ibatis.cache.decorators.LoggingCache" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="org.springframework.boot" level="DEBUG"/>-->
+
+    <root level="info">
+        <!--<appender-ref ref="ASYNC"/>-->
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

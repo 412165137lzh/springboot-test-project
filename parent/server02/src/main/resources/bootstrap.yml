@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: server02
+log:
+  basePath: d:/logs/test02
+server:
+  port: 10087

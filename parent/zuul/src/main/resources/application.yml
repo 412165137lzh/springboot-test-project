@@ -1,0 +1,51 @@
+server:
+  port: 10010 #服务端口
+
+spring:
+  application:
+    name: zuul-service #指定服务名
+
+eureka:
+  client:
+    #registry-fetch-interval-seconds: 5 # 获取服务列表的周期：5s
+    service-url:
+      defaultZone: http://127.0.0.1:10001/eureka,http://127.0.0.1:10002/eureka
+
+sensitiveHeaders:
+
+#zuul:
+#  strip-prefix: true
+#  prefix: /api
+
+zuul:
+  routes:
+    server02: /server02/**
+#    strip-prefix: true  #是否删除前缀
+  strip-prefix: true  #是否删除前缀
+  prefix: /api
+  retryable: true
+
+
+#  routes:
+#    server01: # 这里是路由id，随意写
+#      path: /server01/** # 这里是映射路径
+#      serviceId: server01 # 指定服务名称
+#      strip-prefix: false #是否删除前缀
+#    server02: # 这里是路由id，随意写
+#      path: /server02/** # 这里是映射路径
+#      serviceId: server02 # 指定服务名称
+#      strip-prefix: false #是否删除前缀
+
+ribbon:
+  ConnectTimeout: 250 # 连接超时时间(ms)
+  ReadTimeout: 2000 # 通信超时时间(ms)
+  OkToRetryOnAllOperations: false # 是否对所有操作重试
+  MaxAutoRetriesNextServer: 2 # 同一服务不同实例的重试次数
+  MaxAutoRetries: 1 # 同一实例的重试次数
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillisecond: 6000 # 熔断超时时长：6000ms
